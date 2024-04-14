@@ -20,6 +20,31 @@ def summarize_list_of_tweets(tweets):
     """)
     return response.text
 
+def generate_question_trivia(question):
+    model = genai.GenerativeModel('gemini-pro')
+    # TODO: Specify output format
+    response = model.generate_content(f"""
+        Generate a trivia question based on the following tweets: \n \n
+        {question}
+    """)
+    return response.text
+
+def generate_question_guess_author(tweets):
+    model = genai.GenerativeModel('gemini-pro')
+    response = model.generate_content(f"""
+        Generate a question asking to guess the author of the following tweets: \n \n
+        {'\n'.join(tweets)}
+    """)
+    return response.text
+
+def generate_question_complete_tweet(tweets):
+    model = genai.GenerativeModel('gemini-pro')
+    response = model.generate_content(f"""
+        Generate a question asking to complete the following tweets: \n \n
+        {'\n'.join(tweets)}
+    """)
+    return response.text
+
 tweet_objects = [
     {
         "id": 1,
