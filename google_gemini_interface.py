@@ -22,10 +22,11 @@ def summarize_list_of_tweets(tweets):
 
 def generate_question_trivia(question):
     model = genai.GenerativeModel('gemini-pro')
-    # TODO: Specify output format
     response = model.generate_content(f"""
-        Generate a trivia question based on the following tweets: \n \n
-        {question}
+        Create a one paragraph summary of the following tweets from different authors to generate trivia questions.
+        Use the json format: {{"topic": "trivia", "question": "What is the question?", "options": ["option1", "option2", "option3", "option4"], "answer": "option1}}
+        Use the following tweets to generate the questions: \n \n
+        {'\n'.join(question)}
     """)
     return response.text
 
@@ -66,5 +67,5 @@ tweet_objects = [
     },
 ]
  
-summary = summarize_list_of_tweets([tweet['text'] for tweet in tweet_objects])
+summary = generate_question_trivia([tweet['text'] for tweet in tweet_objects])
 print(summary)
