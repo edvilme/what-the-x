@@ -21,6 +21,10 @@ main > * {
     margin: 8px 0px;
 }
 
+#user_score::after {
+    content: ' ⭐️';
+}
+
 #question_details {
     font-weight: bold;
     color: gray;
