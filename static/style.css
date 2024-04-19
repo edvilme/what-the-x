@@ -1,6 +1,8 @@
 document, body {
     font-family: Arial, Helvetica, sans-serif;
     background: snow;
+    margin: 0;
+    padding: 0;
 }
 
 nav {
@@ -48,6 +50,7 @@ main > * {
     /* 16px = parent.gap */
     max-width: calc(50% - 8px);
     box-sizing: border-box;
+    cursor: pointer;
 }
 #question_options > label:hover{
     transform: scale(0.95);
