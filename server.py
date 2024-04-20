@@ -1,9 +1,12 @@
 from flask import Flask, render_template, request
 import random
+import os
 
 app = Flask(__name__, 
             static_url_path='', 
             static_folder='static')
+
+app.run(os.getenv('PORT', 5000))
 
 
 QUESTIONS = [
