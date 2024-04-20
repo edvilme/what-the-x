@@ -6,9 +6,6 @@ app = Flask(__name__,
             static_url_path='', 
             static_folder='static')
 
-app.run(os.getenv('PORT', 5000))
-
-
 QUESTIONS = [
     {
         'id': 1,
