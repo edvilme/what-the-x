@@ -109,10 +109,11 @@ def callback():
 def me():
     if not session.get("user_token"):
         return render_template('error.html', error_message="You are not authenticated")
-    access_token = session.get("user_token")
-    client = tweepy.Client(access_token)
-    user = client.get_me(user_auth=False, user_fields=['public_metrics'], tweet_fields=['author_id'])
-    return user.data
+    # access_token = session.get("user_token")
+    # client = tweepy.Client(access_token)
+    # user = client.get_me(user_auth=False, user_fields=['public_metrics'], tweet_fields=['author_id'])
+    # return user.data
+    return session.get("user_token")
 
 @app.errorhandler(500)
 def internal_server_error(e):
