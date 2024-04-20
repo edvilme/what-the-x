@@ -1,0 +1,122 @@
+[
+  {
+    "id": "1384011550859124741",
+    "text": "Just finished reading an amazing book! 📚 Highly recommend it to anyone looking for a great read. #BookRecommendation",
+    "author_id": "2244994945",
+    "created_at": "2021-04-19T18:21:24.000Z",
+    "public_metrics": {
+      "retweet_count": 25,
+      "reply_count": 10,
+      "like_count": 100,
+      "quote_count": 5
+    }
+  },
+  {
+    "id": "1384011890247522306",
+    "text": "Had a fantastic time exploring the city today! 🌆 #CityAdventures #Travel",
+    "author_id": "786939553",
+    "created_at": "2021-04-19T18:22:42.000Z",
+    "public_metrics": {
+      "retweet_count": 15,
+      "reply_count": 8,
+      "like_count": 80,
+      "quote_count": 3
+    }
+  },
+  {
+    "id": "1384012223723187202",
+    "text": "Just finished a challenging workout 💪 Feeling energized and ready to take on the day! #FitnessMotivation",
+    "author_id": "3094649958",
+    "created_at": "2021-04-19T18:23:59.000Z",
+    "public_metrics": {
+      "retweet_count": 20,
+      "reply_count": 12,
+      "like_count": 90,
+      "quote_count": 4
+    }
+  },
+  {
+    "id": "1384012551209635841",
+    "text": "Cooked a delicious meal tonight! 🍽️ #Foodie #Cooking",
+    "author_id": "981150166",
+    "created_at": "2021-04-19T18:25:18.000Z",
+    "public_metrics": {
+      "retweet_count": 18,
+      "reply_count": 7,
+      "like_count": 85,
+      "quote_count": 2
+    }
+  },
+  {
+    "id": "1384012882614461441",
+    "text": "Just watched an amazing movie! 🎬 Highly recommend it to all movie buffs out there. #MovieRecommendation",
+    "author_id": "202423860",
+    "created_at": "2021-04-19T18:26:36.000Z",
+    "public_metrics": {
+      "retweet_count": 30,
+      "reply_count": 15,
+      "like_count": 110,
+      "quote_count": 6
+    }
+  },
+  {
+    "id": "1384013211325547522",
+    "text": "Excited to start my new project! 🚀 #NewBeginnings #Motivation",
+    "author_id": "2244994945",
+    "created_at": "2021-04-19T18:27:52.000Z",
+    "public_metrics": {
+      "retweet_count": 22,
+      "reply_count": 9,
+      "like_count": 95,
+      "quote_count": 3
+    }
+  },
+  {
+    "id": "1384013540838243841",
+    "text": "Enjoying a relaxing day at the beach! 🏖️ #BeachDay #Relaxation",
+    "author_id": "786939553",
+    "created_at": "2021-04-19T18:29:10.000Z",
+    "public_metrics": {
+      "retweet_count": 28,
+      "reply_count": 11,
+      "like_count": 105,
+      "quote_count": 5
+    }
+  },
+  {
+    "id": "1384013870023522305",
+    "text": "Attended an inspiring webinar today! 💡 Learned a lot of valuable insights. #Learning",
+    "author_id": "3094649958",
+    "created_at": "2021-04-19T18:30:28.000Z",
+    "public_metrics": {
+      "retweet_count": 35,
+      "reply_count": 20,
+      "like_count": 120,
+      "quote_count": 8
+    }
+  },
+  {
+    "id": "1384014198750307841",
+    "text": "Just completed a challenging hike! 🥾 Feeling accomplished and closer to nature. #Hiking",
+    "author_id": "981150166",
+    "created_at": "2021-04-19T18:31:46.000Z",
+    "public_metrics": {
+      "retweet_count": 32,
+      "reply_count": 18,
+      "like_count": 115,
+      "quote_count": 7
+    }
+  },
+  {
+    "id": "1384014527398765057",
+    "text": "Celebrating a milestone achievement today! 🎉 Hard work pays off! #Success",
+    "author_id": "202423860",
+    "created_at": "2021-04-19T18:33:04.000Z",
+    "public_metrics": {
+      "retweet_count": 40,
+      "reply_count": 25,
+      "like_count": 130,
+      "quote_count": 10
+    }
+  }
+]
