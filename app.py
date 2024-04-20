@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for, session
+from flask import Flask, render_template, request, url_for, session, redirect
 from flask_session import Session
 
 import os
@@ -87,7 +87,7 @@ def callback():
     access_token = oauth2_user_handler.fetch_token(response_url_from_app)['access_token']
     session["user_token"] = access_token
 
-    return redirect_uri("/me")
+    return redirect("/me")
 
 @app.route("/me")
 def me():
