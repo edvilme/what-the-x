@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, url_for
+from flask import Flask, render_template, request, url_for, session
+from flask_session import Session
 
 import os
 import random
@@ -15,6 +16,9 @@ load_dotenv(".env")
 app = Flask(__name__, 
             static_url_path='', 
             static_folder='static')
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
 QUESTIONS = [
     {
@@ -87,6 +91,7 @@ def callback():
     response_url_from_app = '{}?state={}&code={}'.format(redirect_uri, state, code)
     access_token = oauth2_user_handler.fetch_token(response_url_from_app)['access_token']
     print(access_token)
+    session["user_token"] = access_token
     client = tweepy.Client(access_token)
     user = client.get_me(user_auth=False, user_fields=['public_metrics'], tweet_fields=['author_id'])
     print(user)
@@ -100,6 +105,14 @@ def callback():
     return render_template('callback-success.html', name=name, user_name=user_name,
                            friends_count=friends_count, tweet_count=tweet_count, followers_count=followers_count)
 
+@app.route("/me")
+def me():
+    if not session.get("user_token"):
+        return render_template('error.html', error_message="You are not authenticated")
+    access_token = session.get("user_token")
+    client = tweepy.Client(access_token)
+    user = client.get_me(user_auth=False, user_fields=['public_metrics'], tweet_fields=['author_id'])
+    return user.data
 
 @app.errorhandler(500)
 def internal_server_error(e):
