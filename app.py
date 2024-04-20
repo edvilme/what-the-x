@@ -20,33 +20,6 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-QUESTIONS = [
-    {
-        'id': 1,
-        'type': 'trivia',
-        'trending_topic': 'testing', 
-        'question': "What is the answer to life, the universe, and everything?",
-        'options': ['42', '24', '0', '1'],
-        'answer': '42'
-    },
-    {
-        'id': 2,
-        'type': 'trivia',
-        'trending_topic': 'testing',
-        'question': "What is the capital of France?",
-        'options': ['Paris', 'London', 'Berlin', 'Madrid'],
-        'answer': 'Paris'
-    }, 
-    {
-        'id': 3,
-        'type': 'trivia',
-        'trending_topic': 'testing',
-        'question': "What is the largest mammal in the world?",
-        'options': ['Blue Whale', 'Elephant', 'Giraffe', 'Hippopotamus'],
-        'answer': 'Blue Whale'
-    }
-]
-
 oauth2_user_handler = tweepy.OAuth2UserHandler(
     client_id = os.getenv('CLIENT_ID'),
     redirect_uri = os.getenv('REDIRECT_URI'),
