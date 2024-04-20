@@ -8,6 +8,9 @@ from urllib import parse
 import urllib.error
 import json
 import tweepy
+from dotenv import load_dotenv
+
+load_dotenv(".env")
 
 app = Flask(__name__, 
             static_url_path='', 
@@ -40,7 +43,8 @@ QUESTIONS = [
     }
 ]
 
-app.debug = False
+print(os.getenv('CLIENT_ID'))
+
 
 oauth2_user_handler = tweepy.OAuth2UserHandler(
     client_id = os.getenv('CLIENT_ID'),
