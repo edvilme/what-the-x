@@ -48,7 +48,6 @@ async def cron_generate_questions():
         try:
             await generate_questions()
         except Exception as e:
-
             print("Error", e)
             pass
         await asyncio.sleep(60)
