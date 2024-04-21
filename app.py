@@ -115,15 +115,16 @@ def leaderboard():
 def answer(question):
     if not session.get("user_token", 'ZU43T1dqUW12bXEtam5VbktqbzBkaGpjeERxQ0paLWRybHhtelJMOU1PcUxMOjE3MTM3MTc0MDU4Mjg6MTowOmF0OjE'):
         return {"status": "error", "error": "User not authenticated"}, 401
-    answer = request.form.get("answer")
+    content = request.get_json(silent=True)
+    answer = content.get("answer")
     if answer is None:
         return {"stauts": "error", "error": "Answer not found"}, 404
     # Get question by id
     q = Question.get(Question.id == question)
     if not q:
-        return {"status": "error", "error": "Answer not found"}, 404
+        return {"status": "error", "error": "Question not found"}, 404
     # Get user data
-    user = tweepy.Client(session.get("user_token", 'ZU43T1dqUW12bXEtam5VbktqbzBkaGpjeERxQ0paLWRybHhtelJMOU1PcUxMOjE3MTM3MTc0MDU4Mjg6MTowOmF0OjE')).get_me().data
+    user = tweepy.Client(session.get("user_token", 'ZU43T1dqUW12bXEtam5VbktqbzBkaGpjeERxQ0paLWRybHhtelJMOU1PcUxMOjE3MTM3MTc0MDU4Mjg6MTowOmF0OjE')).get_me(user_auth=False).data
     # Save answer
     QuestionAnswers.create(
         user_id=User.get(User.user_id == user["id"]),
@@ -135,7 +136,12 @@ def answer(question):
     if q.answer == answer:
         return {"status": "correct"}
     return {"status": "incorrect"}
-    
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")    
+
 @app.errorhandler(500)
 def internal_server_error(e):
     return render_template('error.html', error_message='uncaught exception'), 500
