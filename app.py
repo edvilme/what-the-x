@@ -60,25 +60,25 @@ def callback():
     session["user_token"] = access_token
 
     # Create user if not exists
-    user = tweepy.Client(access_token).get_me().data
+    user = tweepy.Client(access_token).get_me(user_auth=False).data
     User.get_or_create(user_id=user["id"], username=user["screen_name"], score=0)
 
     return redirect("/index")
 
 @app.route("/me")
 def me():
-    if not session.get("user_token"):
+    if not session.get("user_token", os.getenv("USER_TOKEN_DEV")):
         return render_template('error.html', error_message="You are not authenticated")
-    return session.get("user_token")
+    return session.get("user_token", os.getenv("USER_TOKEN_DEV"))
 
 @app.route("/q/<string:username>/<string:q>")
 def q(username, q):
     # Require login
-    if not session.get("user_token"):
+    if not session.get("user_token", os.getenv("USER_TOKEN_DEV")):
         return render_template('error.html', error_message="You are not authenticated")
 
     # User - Twitter
-    twitter_user = tweepy.Client(session.get("user_token")).get_me(user_auth=False).data
+    twitter_user = tweepy.Client(session.get("user_token", os.getenv("USER_TOKEN_DEV"))).get_me(user_auth=False).data
     # User - DB
     user = User.get(User.user_id == twitter_user["id"])
     quiz = Quiz.select().join(User).where(User.username == username, Quiz.name == q)
@@ -108,7 +108,7 @@ def index():
 
 @app.route("/answer/<int:question>", methods=["POST"])
 def answer(question):
-    if not session.get("user_token"):
+    if not session.get("user_token", os.getenv("USER_TOKEN_DEV")):
         return {"status": "error", "error": "User not authenticated"}, 401
     content = request.get_json(silent=True)
     answer = content.get("answer").strip()
@@ -119,7 +119,7 @@ def answer(question):
     if not q:
         return {"status": "error", "error": "Question not found"}, 404
     # Get user data
-    user = tweepy.Client(session.get("user_token")).get_me().data
+    user = tweepy.Client(session.get("user_token", os.getenv("USER_TOKEN_DEV"))).get_me(user_auth=False).data
     user_id = user.get("id")
     
     # Save answer
