@@ -111,7 +111,7 @@ def answer(question):
     if not session.get("user_token"):
         return {"status": "error", "error": "User not authenticated"}, 401
     content = request.get_json(silent=True)
-    answer = content.get("answer")
+    answer = content.get("answer").strip()
     if answer is None:
         return {"stauts": "error", "error": "Answer not found"}, 404
     # Get question by id
@@ -135,9 +135,8 @@ def answer(question):
     )
     # Check answer
     if q.answer == answer:
-        user.score += 100
-        user.save()
-        return {"status": "correct", "score": user.score}
+        User.update(score=User.score + 1).where(User.user_id == user["id"]).execute()
+        return {"status": "correct"}
     return {"status": "incorrect"}
 
 @app.route("/logout")
