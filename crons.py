@@ -47,3 +47,5 @@ async def cron_generate_questions():
             pass
         await asyncio.sleep(60)
 
+if __name__ == "__main__":
+    asyncio.run(cron_generate_questions())

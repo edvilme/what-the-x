@@ -138,11 +138,11 @@ def answer(question):
         return {"status": "correct"}
     return {"status": "incorrect"}
     
-# Run cron_generate_questions as a background task only once
-@scheduler.task('date', id='_cron_generate_questions', run_date=datetime.now())
-def _cron_generate_questions():
-    asyncio.run(cron_generate_questions())
+# # Run cron_generate_questions as a background task only once
+# @scheduler.task('date', id='_cron_generate_questions', run_date=datetime.now())
+# def _cron_generate_questions():
+#     asyncio.run(cron_generate_questions())
 
-scheduler.init_app(app)
-scheduler.start()
-app.run()
+# scheduler.init_app(app)
+# scheduler.start()
+# app.run()
