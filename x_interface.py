@@ -7,6 +7,10 @@ bearer_token = "AAAAAAAAAAAAAAAAAAAAAKOjtQEAAAAAIGfUwwE6r4%2FHa3W3sfZPYnQ%2BbhI%
 
 client = tweepy.Client(bearer_token)
 
+def get_user_data(username):
+    user = client.get_user(username=username)
+    return (user.data.id, user.data.username)
+
 def get_data_woeid():
     file = open('data/woeid.json')
     data = json.load(file)
