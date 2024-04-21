@@ -18,6 +18,7 @@ class User(BaseModel):
 class Topic(BaseModel):
     id = CharField(primary_key=True)
     country = CharField()
+    category = CharField()
     name = CharField()
 
 class Quiz(BaseModel):
