@@ -11,9 +11,12 @@ import json
 import tweepy
 
 # Config - Load environment variables
+
+# Config - Load environment variables
 from dotenv import load_dotenv
 load_dotenv(".env")
 
+# Config - Flask app
 # Config - Flask app
 app = Flask(__name__, 
             static_url_path='', 
@@ -22,6 +25,7 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
+# Config - OAuth2
 # Config - OAuth2
 oauth2_user_handler = tweepy.OAuth2UserHandler(
     client_id = os.getenv('CLIENT_ID'),
@@ -33,6 +37,10 @@ oauth2_user_handler = tweepy.OAuth2UserHandler(
 authorize_url = (oauth2_user_handler.get_authorization_url())
 state = parse.parse_qs(parse.urlparse(authorize_url).query)['state'][0]
 
+# Data - Questions
+from models import *
+
+QUESTIONS = []
 # Data - Questions
 from models import *
 
@@ -95,7 +103,7 @@ def q(username, quiz):
         "type": question.type,
         "question": question.question,
         "options": [option.option for option in question.options],
-        "trending_topic": f"@{username}/{quiz}",
+        "trending_topic": f"{q.get().topic_id.country}/{q.get().topic_id.name}",
     }
     return render_template('question.html', question=question)
 

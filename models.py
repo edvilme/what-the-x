@@ -39,5 +39,4 @@ class QuestionOption(BaseModel):
     question_id = ForeignKeyField(Question, backref='options')
     option = CharField()
 
-
 db.create_tables([User, Topic, Quiz, Question, QuestionOption])
