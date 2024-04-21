@@ -18,15 +18,18 @@
         }
       </script>
 </head>
-<body>
-    <nav class="bg-gray-800 py-4">
+<body class="bg-black">
+    <nav class="bg-neutral-700 py-4">
         <div class="container mx-auto flex justify-between items-center">
             <div class="flex items-center text-white">
                 <a href="index" class="bg-grey text-white font-bold py-2 px-4">Back</a>
                 <span id="user_username" class="mr-4">@appleseed</span>
-                <span id="user_score" class="bg-blue-500 text-white px-2 py-1 rounded-full">{{ userScore }}</span>
+                <span id="user_score" class="bg-purple-500 text-white px-3 py-2 rounded-full flex items-center justify-center font-bold shadow-lg animate-pulse">
+                    🏆 <!-- Emoji representing the score -->
+                    <span class="ml-2 text-xl">{{ userScore }}</span>
+                </span>                                       
             </div>
-            <button class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
+            <button class="bg-red-300 text-white font-bold py-2 px-4 rounded">
                 Log Out
             </button>
         </div>
@@ -37,37 +40,139 @@
         </div>
         <div id="question_question" class="top-50 left-0">{{question['question']}}</div>
         <form action="" method="post">
-            <div style="margin-top: 15%;" class="grid grid-cols-2 gap-8 justify-items-center items-center">
-                <div class="col-span-2 md:col-span-1 floating-button">
-                    <label>
-                        <button class="bg-sky-500 hover:bg-sky-700 text-white font-bold py-4 px-6 rounded inline-flex items-center w-full md:w-auto min-w-min min-h-full">
-                            <span>{{ question['options'][0] }}</span>
-                        </button>
-                    </label>
+            <div class="flex flex-col items-center mt-8">
+                <div class="flex justify-between w-full mb-4">
+                    <button class="bg-purple-500 text-white font-bold py-4 px-6 rounded inline-flex items-center flex-grow border border-transparent hover:border-white hover:bg-purple-500 hover:bg-opacity-75">
+                        <span>{{ question['options'][0] }}</span>
+                    </button>
+                    <button class="bg-purple-500 text-white font-bold py-4 px-6 rounded inline-flex items-center flex-grow border border-transparent hover:border-white hover:bg-purple-500 hover:bg-opacity-75 ml-4">
+                        <span>{{ question['options'][1] }}</span>
+                    </button>
                 </div>
-                <div class="col-span-2 md:col-span-1 floating-button">
-                    <label>
-                        <button class="bg-sky-500 hover:bg-sky-700 text-white font-bold py-4 px-6 rounded inline-flex items-center w-full md:w-auto min-w-min min-h-full">
-                            <span>{{ question['options'][1] }}</span>
-                        </button>
-                    </label>
-                </div>
-                <div class="col-span-2 md:col-span-1 floating-button">
-                    <label>
-                        <button class="bg-sky-500 hover:bg-sky-700 text-white font-bold py-4 px-6 rounded inline-flex items-center w-full md:w-auto min-w-min min-h-full">
-                            <span>{{ question['options'][2] }}</span>
-                        </button>
-                    </label>
-                </div>
-                <div class="col-span-2 md:col-span-1 floating-button">
-                    <label>
-                        <button class="bg-sky-500 hover:bg-sky-700 text-white font-bold py-4 px-6 rounded inline-flex items-center w-full md:w-auto min-w-min min-h-full">
-                            <span>{{ question['options'][3] }}</span>
-                        </button>
-                    </label>
+                <div class="flex justify-between w-full">
+                    <button class="bg-purple-500 text-white font-bold py-4 px-6 rounded inline-flex items-center flex-grow border border-transparent hover:border-white hover:bg-purple-500 hover:bg-opacity-75">
+                        <span>{{ question['options'][2] }}</span>
+                    </button>
+                    <button class="bg-purple-500 text-white font-bold py-4 px-6 rounded inline-flex items-center flex-grow border border-transparent hover:border-white hover:bg-purple-500 hover:bg-opacity-75 ml-4">
+                        <span>{{ question['options'][3] }}</span>
+                    </button>
                 </div>
             </div>
         </form>                                   
     </main>
+    <div id="particles-js" class="particles-js-canvas-el" style="width: 200%; height: 200%;"></div>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS('particles-js', {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#ffffff"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    },
+                    "image": {
+                        "src": "img/github.svg",
+                        "width": 100,
+                        "height": 100
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": false,
+                    "anim": {
+                        "enable": false,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": false,
+                        "speed": 40,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#ffffff",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 6,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false,
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 140,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 40,
+                        "duration": 2,
+                        "opacity": 8,
+                        "speed": 3
+                    },
+                    "repulse": {
+                        "distance": 200,
+                        "duration": 0.4
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    },
+                    "remove": {
+                        "particles_nb": 2
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+    </script>
 </body>
 </html>

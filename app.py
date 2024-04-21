@@ -122,7 +122,11 @@ def index():
 
 @app.route("/tutorial")
 def tutorial():
-    return render_template("tutorial.html", question=random.choice(QUESTIONS))
+    return render_template("tutorial.html")
+
+@app.route("/leaderboard")
+def leaderboard():
+    return render_template("leaderboard.html")
 
 @app.route("/answer/<int:question>", methods=["POST"])
 def answer(question):
