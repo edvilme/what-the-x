@@ -113,6 +113,10 @@ def question():
 def index():
     return render_template("index.html", question=random.choice(QUESTIONS))
 
+@app.route("/tutorial")
+def tutorial():
+    return render_template("tutorial.html", question=random.choice(QUESTIONS))
+
 @app.route("/answer/<int:question>", methods=["POST"])
 def answer(question):
     # Search question by id
