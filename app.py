@@ -76,7 +76,7 @@ def callback():
     access_token = oauth2_user_handler.fetch_token(response_url_from_app)['access_token']
     session["user_token"] = access_token
 
-    return redirect("/me")
+    return redirect("/index")
 
 @app.route("/me")
 def me():
@@ -112,13 +112,13 @@ def q(username, quiz):
     }
     return render_template('question.html', question=question)
 
-@app.route("/question")
+'''@app.route("/question")
 def question():
-    return render_template("question.html", question=random.choice(QUESTIONS))
+    return render_template("question.html", question=random.choice(QUESTIONS))'''
 
 @app.route("/index")
 def index():
-    return render_template("index.html", question=random.choice(QUESTIONS))
+    return render_template("index.html")
 
 @app.route("/tutorial")
 def tutorial():
