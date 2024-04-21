@@ -95,21 +95,13 @@ def q(username, q):
         "type": question.type,
         "question": question.question,
         "options": [option.option for option in question.options],
-        "trending_topic": f"{quiz.get().topic_id.country}/{quiz.get().topic_id.name}",
+        "trending_topic": f"{q.get().topic_id.country}/{q.get().topic_id.name}",
     }
-    return render_template('question.html', question=question, user=twitter_user)
+    return render_template('question.html', question=question)
 
-@app.route("/index")
-def index():
-    return render_template("index.html")
-
-@app.route("/tutorial")
-def tutorial():
-    return render_template("tutorial.html")
-
-@app.route("/leaderboard")
-def leaderboard():
-    return render_template("leaderboard.html")
+@app.route("/question")
+def question():
+    return render_template("question.html", question=random.choice(QUESTIONS))
 
 @app.route("/answer/<int:question>", methods=["POST"])
 def answer(question):
