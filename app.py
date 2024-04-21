@@ -1,3 +1,4 @@
+import asyncio
 from flask import Flask, render_template, request, url_for, session, redirect
 from flask_session import Session
 
@@ -11,6 +12,7 @@ import json
 import tweepy
 
 import x_interface as x
+import grok_interface as g
 
 # Config - Load environment variables
 
@@ -140,9 +142,10 @@ def answer(question):
 from flask_apscheduler import APScheduler
 scheduler = APScheduler()
 
-@scheduler.task('interval', id='generate_questions', seconds=20)
+@scheduler.task('interval', id='generate_questions', seconds=60*2)
 def generate_questions():
     tweets = x.get_tweets_in_reply_to("#trending")
+    asyncio.run(g.GrokInterface(tweets).main())
     print(tweets)
 
 scheduler.init_app(app)
