@@ -104,6 +104,10 @@ def q(username, quiz):
 def question():
     return render_template("question.html", question=random.choice(QUESTIONS))
 
+@app.route("/index")
+def index():
+    return render_template("index.html", question=random.choice(QUESTIONS))
+
 @app.route("/answer/<int:question>", methods=["POST"])
 def answer(question):
     if not session.get("user_token"):
