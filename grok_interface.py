@@ -24,14 +24,14 @@ class GrokInterface:
 
                 You must then provide me with the correct answer as a string.
 
-                Please format your answer as a valid JSON. For example, if the question you generated is "What word is the most used?", and the options are ["The most used word is 'car'", "The most use word is 'winter'", "The most used word is 'universe'", "There is no most used words"], and the answer is "The most use word is 'winter'", your output should be.
-                {{
+                Please format your answer as a valid JSON array. For example, if the question you generated is "What word is the most used?", and the options are ["The most used word is 'car'", "The most use word is 'winter'", "The most used word is 'universe'", "There is no most used words"], and the answer is "The most use word is 'winter'", your output should be.
+                [{{
                     id: 1,
                     topic: "AI",
                     question: "What word is the most used?", 
                     options: ["The most used word is 'car'", "The most use word is 'winter'", "The most used word is 'universe'", "There is no most used words"], 
                     answer: "The most use word is 'winter'"
-                }}<|separator|>
+                }}]<|separator|>
 
                 Assistant: Understood! Please provide the list of tweets.<|separator|>
 
@@ -73,23 +73,26 @@ class GrokInterface:
         """.format(preamble=PREAMBLE, tweets=self.tweets)
 
     async def generate_questions(self, question_type):
-        TYPES_FUNCTIONS = {
+        PROMPTS_FUNCTIONS = {
             'trivia': self._get_trivia_tweet_prompt,
             'complete': self._get_complete_tweet_prompt,
         }
 
-        if question_type not in TYPES_FUNCTIONS:
+        if question_type not in PROMPTS_FUNCTIONS:
             raise ValueError(f"Invalid question type: {question_type}")
 
-        prompt_text = TYPES_FUNCTIONS[question_type]()
+        prompt_text = PROMPTS_FUNCTIONS[question_type]()
 
         await prompt(prompt_text)
         result = await sample(max_len=self.max_len, stop_tokens=["<|separator|>"])
 
-        print(result.as_string())
-
-    async def main(self):
-        await self.generate_questions('complete')
+        try:
+            result = json.loads(result.as_string())
+        except json.JSONDecodeError:
+            print("Error: Could not decode JSON response.")
+            return
+        
+        return result
 
 if __name__ == "__main__":
     json_file = 'data/tweets.json'
@@ -98,4 +101,5 @@ if __name__ == "__main__":
     tweets = f"\t{',\n\t'.join(re.sub(r'#\S*', '', tweet['text']) for tweet in tweet_objects)}"
     
     interface = GrokInterface(tweets)
-    asyncio.run(interface.main())
+    r = asyncio.run(interface.generate_questions('trivia'))
+    print(r)
