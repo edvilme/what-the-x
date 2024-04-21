@@ -42,18 +42,18 @@
         <form action="" method="post">
             <div class="flex flex-col items-center mt-8">
                 <div class="flex justify-between w-full mb-4">
-                    <button class="bg-purple-500 text-white font-bold py-4 px-6 rounded inline-flex items-center flex-grow border border-transparent hover:border-white hover:bg-purple-500 hover:bg-opacity-75">
+                    <button class="x_button_option bg-purple-500 text-white font-bold py-4 px-6 rounded inline-flex items-center flex-grow border border-transparent hover:border-white hover:bg-purple-500 hover:bg-opacity-75">
                         <span>{{ question['options'][0] }}</span>
                     </button>
-                    <button class="bg-purple-500 text-white font-bold py-4 px-6 rounded inline-flex items-center flex-grow border border-transparent hover:border-white hover:bg-purple-500 hover:bg-opacity-75 ml-4">
+                    <button class="x_button_option bg-purple-500 text-white font-bold py-4 px-6 rounded inline-flex items-center flex-grow border border-transparent hover:border-white hover:bg-purple-500 hover:bg-opacity-75 ml-4">
                         <span>{{ question['options'][1] }}</span>
                     </button>
                 </div>
                 <div class="flex justify-between w-full">
-                    <button class="bg-purple-500 text-white font-bold py-4 px-6 rounded inline-flex items-center flex-grow border border-transparent hover:border-white hover:bg-purple-500 hover:bg-opacity-75">
+                    <button class="x_button_option bg-purple-500 text-white font-bold py-4 px-6 rounded inline-flex items-center flex-grow border border-transparent hover:border-white hover:bg-purple-500 hover:bg-opacity-75">
                         <span>{{ question['options'][2] }}</span>
                     </button>
-                    <button class="bg-purple-500 text-white font-bold py-4 px-6 rounded inline-flex items-center flex-grow border border-transparent hover:border-white hover:bg-purple-500 hover:bg-opacity-75 ml-4">
+                    <button class="x_button_option bg-purple-500 text-white font-bold py-4 px-6 rounded inline-flex items-center flex-grow border border-transparent hover:border-white hover:bg-purple-500 hover:bg-opacity-75 ml-4">
                         <span>{{ question['options'][3] }}</span>
                     </button>
                 </div>
@@ -63,6 +63,33 @@
     <div id="particles-js" class="particles-js-canvas-el" style="width: 200%; height: 200%;"></div>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
+        document.querySelectorAll('.x_button_option').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const questionId = "{{ question['id'] }}";
+                const option = e.target.innerText;
+                console.log(option);
+                const response = await fetch(`/answer/${questionId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 'answer': option })
+                });
+                const data = await response.json();
+                console.log(data);
+                if (data['status'] == 'correct') {
+                    e.target.style.backgroundColor = 'green';
+                } else {
+                    e.target.style.backgroundColor = 'red';
+                }
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            });
+        });
+
+
         particlesJS('particles-js', {
             "particles": {
                 "number": {
