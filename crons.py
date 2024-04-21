@@ -5,46 +5,45 @@ import grok_interface as gi
 from models import Quiz, User, Question, QuestionOption, Topic, db
 
 
-from flask_apscheduler import APScheduler
-scheduler = APScheduler()
-
 RETRY_COUNT = 3
 
-@scheduler.task('interval', id='generate_questions', seconds=60)
-def generate_questions():
+async def generate_questions():
+    print("running cron job")
+    # Get tweets
     tweets = x.get_tweets_in_reply_to("#trending")
+    if not tweets:
+        return
+    # Group tweets by username and text with list of tweets
+    tweet_groups = {}
+    for tweet in tweets:
+        username = tweet["reply_author_id"] or "unknown"
+        text = tweet['reply_tweet_text']
+        if (username, text) not in tweet_groups:
+            tweet_groups[(username, text)] = []
+        tweet_groups[(username, text)].append(tweet)
+    print(tweet_groups)
 
-    print("starting cron job")
+    # Iterate over tweet groups
+    for (username, text), tweets in tweet_groups.items():
+        # Get or create user
+        user = User.get_or_create(user_id=3312, username=username, score=0)[0]
+        # Get or create quiz
+        quiz = Quiz.get_or_create(topic_id=1, user_id=user.user_id, name=text)[0]
+        # Questions
+        questions = await gi.GrokInterface(tweets).generate_questions('complete')
+        # Assign questions to quiz
+        for question in questions:
+            q = Question.create(quiz_id=quiz.id, type='complete', question=question['question'], answer=question['answer'])
+            for option in question['options']:
+                QuestionOption.create(question_id=q.id, option=option)
 
-    with db.atomic():
-        quiz = Quiz.create(
-            topic_id = Topic.get(Topic.id == 1),
-            user_id = User.get(User.user_id == 1),
-            name = 'trending'
-        )
+        print(username, questions)
 
-    for q_type in ('trivia', 'complete'):
-        print(f"q_type={q_type}")
-        count = 0
-        results = None
-        while count < RETRY_COUNT:
-            asyncio.set_event_loop(asyncio.new_event_loop())
-            results = asyncio.run(gi.GrokInterface(tweets).generate_questions(q_type))
-            print(results)
-            count += RETRY_COUNT if results else 1
-        print("creating db records")
-        results = results if isinstance(results, list) else [results]
-        for result in results:
-            with db.atomic():
-                question = Question.create(
-                    quiz_id = quiz.id,
-                    type = q_type,
-                    question = result['question'],
-                    answer = result['answer']
-                )
-                for option in result['options']:
-                    QuestionOption.create(
-                        question_id = question.id,
-                        option = option
-                    )
-    print("ending cron job")
+async def cron_generate_questions():
+    while True:
+        try:
+            await generate_questions()
+        except:
+            pass
+        await asyncio.sleep(60)
+
