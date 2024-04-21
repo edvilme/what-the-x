@@ -5,6 +5,7 @@ charset-normalizer==3.3.2
 click==8.1.7
 Flask==3.0.3
 Flask-Session==0.8.0
+Flask-APScheduler==1.13.1
 google-ai-generativelanguage==0.6.1
 google-api-core==2.18.0
 google-api-python-client==2.125.0

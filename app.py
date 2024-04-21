@@ -1,18 +1,16 @@
 import asyncio
-from flask import Flask, render_template, request, url_for, session, redirect
+from flask import Flask, render_template, request, session, redirect
 from flask_session import Session
 
 import os
 import random
-import oauth2 as oauth
-import urllib.request
 from urllib import parse
-import urllib.error
-import json
 import tweepy
 
 import x_interface as x
 import grok_interface as g
+from models import Quiz, User, QuestionOption
+from crons import scheduler
 
 # Config - Load environment variables
 
@@ -20,7 +18,6 @@ import grok_interface as g
 from dotenv import load_dotenv
 load_dotenv(".env")
 
-# Config - Flask app
 # Config - Flask app
 app = Flask(__name__, 
             static_url_path='', 
@@ -138,17 +135,6 @@ def answer(question):
     return {"status": "incorrect"}
     
 
-# Cron jobs
-from flask_apscheduler import APScheduler
-scheduler = APScheduler()
-
-@scheduler.task('interval', id='generate_questions', seconds=60*2)
-def generate_questions():
-    tweets = x.get_tweets_in_reply_to("#trending")
-    asyncio.run(g.GrokInterface(tweets).main())
-    print(tweets)
-
 scheduler.init_app(app)
 scheduler.start()
 app.run()
-

@@ -33,13 +33,13 @@ class GrokInterface:
                     answer: "The most use word is 'winter'"
                 }}]<|separator|>
 
-                Assistant: Understood! Please provide the list of tweets.<|separator|>
+                Assistant: Understood! Please provide the list of tweets and I will output an array of valid JSON.<|separator|>
 
                 Human: [
                     {tweets}
                 ]<|separator|>
 
-                Assistant:
+                Assistant: [{{
         """.format(preamble=PREAMBLE, tweets=self.tweets)
 
     def _get_complete_tweet_prompt(self):
@@ -57,8 +57,7 @@ class GrokInterface:
                 [{{
                     id: 1,
                     topic: "AI",
-                    original_tweet: "AI is the future", 
-                    modified_tweet: "___ is the future", 
+                    question: "___ is the future", 
                     options: ["AI", "Machine", "Learning", "Intelligence"], 
                     answer: "AI"
                 }}]<|separator|>
@@ -69,7 +68,7 @@ class GrokInterface:
                     {tweets}
                 ]<|separator|>
 
-                Assistant:
+                Assistant: [{{
         """.format(preamble=PREAMBLE, tweets=self.tweets)
 
     async def generate_questions(self, question_type):
@@ -85,9 +84,10 @@ class GrokInterface:
 
         await prompt(prompt_text)
         result = await sample(max_len=self.max_len, stop_tokens=["<|separator|>"])
-
+        
         try:
-            result = json.loads(result.as_string())
+            # Grok does not format the JSON list correctly anymore...
+            result = json.loads(f'[{{{result.as_string()}')
         except json.JSONDecodeError:
             print("Error: Could not decode JSON response.")
             return
