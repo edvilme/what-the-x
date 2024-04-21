@@ -1,4 +1,3 @@
-import asyncio
 from datetime import datetime
 from flask import Flask, render_template, request, session, redirect
 from flask_session import Session
@@ -8,15 +7,8 @@ import random
 from urllib import parse
 import tweepy
 
-import x_interface as x
-import grok_interface as g
-from models import Quiz, User, QuestionOption
-from crons import cron_generate_questions
+from models import Quiz, User, Question, QuestionAnswers
 
-from flask_apscheduler import APScheduler
-scheduler = APScheduler()
-
-# Config - Load environment variables
 
 # Config - Load environment variables
 from dotenv import load_dotenv
@@ -31,7 +23,6 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Config - OAuth2
-# Config - OAuth2
 oauth2_user_handler = tweepy.OAuth2UserHandler(
     client_id = os.getenv('CLIENT_ID'),
     redirect_uri = os.getenv('REDIRECT_URI'),
@@ -42,14 +33,6 @@ oauth2_user_handler = tweepy.OAuth2UserHandler(
 authorize_url = (oauth2_user_handler.get_authorization_url())
 state = parse.parse_qs(parse.urlparse(authorize_url).query)['state'][0]
 
-# Data - Questions
-from models import *
-
-QUESTIONS = []
-# Data - Questions
-from models import *
-
-QUESTIONS = []
 
 @app.route('/')
 def hello():
@@ -69,7 +52,7 @@ def callback():
         return render_template('error.html', error_message="the OAuth request was denied by this user")
     
     if received_state != state:
-      return render_template('error.html', error_message="There was a problem authenticating this user")
+        return render_template('error.html', error_message="There was a problem authenticating this user")
     
     redirect_uri = os.getenv('REDIRECT_URI')
     response_url_from_app = '{}?state={}&code={}'.format(redirect_uri, state, code)
@@ -86,7 +69,6 @@ def callback():
 def me():
     if not session.get("user_token"):
         return render_template('error.html', error_message="You are not authenticated")
-    access_token = session.get("user_token")
     return session.get("user_token")
 
 @app.route("/q/<string:username>/<string:q>")
@@ -94,13 +76,13 @@ def q(username, q):
     # Require login
     if not session.get("user_token"):
         return render_template('error.html', error_message="You are not authenticated")
-    # Get user id
+
     twitter_user = tweepy.Client(session.get("user_token")).get_me(user_auth=False).data
-    # Get quiz by name and username
+
     quiz = Quiz.select().join(User).where(User.username == username, Quiz.name == q)
     if not quiz:
         return render_template('error.html', error_message='Quiz not found'), 404
-    # Get questions in quiz unanswered by user
+
     questions = Question.select()\
         .where(Question.quiz_id == quiz.get().id, Question.id.not_in(QuestionAnswers.select(QuestionAnswers.question_id)\
         .where(QuestionAnswers.user_id == twitter_user.id)))    
