@@ -93,13 +93,3 @@ class GrokInterface:
             return
         
         return result
-
-if __name__ == "__main__":
-    json_file = 'data/tweets.json'
-    with open(json_file) as json_data:
-        tweet_objects = json.load(json_data)
-    tweets = f"\t{',\n\t'.join(re.sub(r'#\S*', '', tweet['text']) for tweet in tweet_objects)}"
-    
-    interface = GrokInterface(tweets)
-    r = asyncio.run(interface.generate_questions('trivia'))
-    print(r)

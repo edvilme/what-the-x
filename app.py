@@ -1,4 +1,5 @@
 import asyncio
+from datetime import datetime
 from flask import Flask, render_template, request, session, redirect
 from flask_session import Session
 
@@ -10,7 +11,10 @@ import tweepy
 import x_interface as x
 import grok_interface as g
 from models import Quiz, User, QuestionOption
-from crons import scheduler
+from crons import cron_generate_questions
+
+from flask_apscheduler import APScheduler
+scheduler = APScheduler()
 
 # Config - Load environment variables
 
@@ -134,6 +138,10 @@ def answer(question):
         return {"status": "correct"}
     return {"status": "incorrect"}
     
+# Run cron_generate_questions as a background task only once
+@scheduler.task('date', id='_cron_generate_questions', run_date=datetime.now())
+def _cron_generate_questions():
+    asyncio.run(cron_generate_questions())
 
 scheduler.init_app(app)
 scheduler.start()
