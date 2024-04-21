@@ -93,8 +93,7 @@ def me():
 def q(username, q):
     # Require login
     if not session.get("user_token"):
-        # return render_template('error.html', error_message="You are not authenticated")
-        session["user_token"] = "WDl2LTFPSVliQU4ySVBIaG41eGhTbjk5SmlkUGw1djV6RG9fTDd6TTRDZUNjOjE3MTM3MDQ2Mzg4NzI6MToxOmF0OjE"
+        return render_template('error.html', error_message="You are not authenticated")
     # Get user id
     twitter_user = tweepy.Client(session.get("user_token")).get_me(user_auth=False).data
     # Get quiz by name and username
