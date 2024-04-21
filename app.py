@@ -124,7 +124,13 @@ def answer(question):
     if not q:
         return {"status": "error", "error": "Question not found"}, 404
     # Get user data
-    user = tweepy.Client(session.get("user_token", 'ZU43T1dqUW12bXEtam5VbktqbzBkaGpjeERxQ0paLWRybHhtelJMOU1PcUxMOjE3MTM3MTc0MDU4Mjg6MTowOmF0OjE')).get_me(user_auth=False).data
+    user = tweepy.Client(session.get("user_token", 'ZU43T1dqUW12bXEtam5VbktqbzBkaGpjeERxQ0paLWRybHhtelJMOU1PcUxMOjE3MTM3MTc0MDU4Mjg6MTowOmF0OjE')).get_me().data
+    user_id = user.get("id")
+    
+    # Save answer
+    user = User.get_or_none(User.user_id == user_id)
+    if not user:
+        return {"status": "error", "error": "User not found"}, 404
     # Save answer
     QuestionAnswers.create(
         user_id=User.get(User.user_id == user["id"]),
@@ -134,7 +140,9 @@ def answer(question):
     )
     # Check answer
     if q.answer == answer:
-        return {"status": "correct"}
+        user.score += 100
+        user.save()
+        return {"status": "correct", "score": user.score}
     return {"status": "incorrect"}
 
 @app.route("/logout")
