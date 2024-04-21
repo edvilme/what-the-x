@@ -87,26 +87,23 @@ def me():
     if not session.get("user_token"):
         return render_template('error.html', error_message="You are not authenticated")
     access_token = session.get("user_token")
-    client = tweepy.Client(access_token)
     return session.get("user_token")
 
 @app.route("/q/<string:username>/<string:quiz>")
-def q(username, quiz):
-    # Login
+def q(username, q):
+    # Require login
     if not session.get("user_token"):
         return render_template('error.html', error_message="You are not authenticated")
+    # Get user id
+    twitter_user = tweepy.Client(session.get("user_token")).get_me(user_auth=False).data
     # Get quiz by name and username
-    q = Quiz.select().join(User).where(User.username == username, Quiz.name == quiz)
-    if not q:
+    quiz = Quiz.select().join(User).where(User.username == username, Quiz.name == q)
+    if not quiz:
         return render_template('error.html', error_message='Quiz not found'), 404
-    # Get user id in database
-    user = User.get(User.user_id == tweepy.Client(session.get("user_token")).get_me().data["id"])
     # Get questions in quiz unanswered by user
     questions = Question.select()\
-        .where(Question.quiz_id == q.get().id)\
-        .where(Question.id.not_in(QuestionAnswers.select(QuestionAnswers.question_id).where(QuestionAnswers.user_id == user)))    
-    # Get questions by quiz
-    questions = Question.select().where(Question.quiz_id == q.get().id)
+        .where(Question.quiz_id == quiz.get().id, Question.id.not_in(QuestionAnswers.select(QuestionAnswers.question_id)\
+        .where(QuestionAnswers.user_id == twitter_user.id)))    
     if not questions:
         return render_template('error.html', error_message='Questions not found'), 404
     # Get random question
@@ -117,9 +114,9 @@ def q(username, quiz):
         "type": question.type,
         "question": question.question,
         "options": [option.option for option in question.options],
-        "trending_topic": f"{q.get().topic_id.country}/{q.get().topic_id.name}",
+        "trending_topic": f"{quiz.get().topic_id.country}/{quiz.get().topic_id.name}",
     }
-    return render_template('question.html', question=question, user=user)
+    return render_template('question.html', question=question, user=twitter_user)
 
 @app.route("/index")
 def index():
