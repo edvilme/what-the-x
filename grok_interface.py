@@ -39,7 +39,7 @@ class GrokInterface:
                     {tweets}
                 ]<|separator|>
 
-                Assistant:{{
+                Assistant:
         """.format(preamble=PREAMBLE, tweets=self.tweets)
 
     def _get_complete_tweet_prompt(self):
@@ -69,7 +69,7 @@ class GrokInterface:
                     {tweets}
                 ]<|separator|>
 
-                Assistant:[{{
+                Assistant:
         """.format(preamble=PREAMBLE, tweets=self.tweets)
 
     async def generate_questions(self, question_type):
@@ -89,7 +89,7 @@ class GrokInterface:
         print(result.as_string())
 
     async def main(self):
-        await self.generate_questions('trivia')
+        await self.generate_questions('complete')
 
 if __name__ == "__main__":
     json_file = 'data/tweets.json'
@@ -98,5 +98,4 @@ if __name__ == "__main__":
     tweets = f"\t{',\n\t'.join(re.sub(r'#\S*', '', tweet['text']) for tweet in tweet_objects)}"
     
     interface = GrokInterface(tweets)
-
     asyncio.run(interface.main())
