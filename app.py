@@ -77,8 +77,10 @@ def q(username, q):
     if not session.get("user_token"):
         return render_template('error.html', error_message="You are not authenticated")
 
+    # User - Twitter
     twitter_user = tweepy.Client(session.get("user_token")).get_me(user_auth=False).data
-
+    # User - DB
+    user = User.get(User.user_id == twitter_user["id"])
     quiz = Quiz.select().join(User).where(User.username == username, Quiz.name == q)
     if not quiz:
         return render_template('error.html', error_message='Quiz not found'), 404
@@ -98,11 +100,7 @@ def q(username, q):
         "options": [option.option for option in question.options],
         "trending_topic": f"{q.get().topic_id.country}/{q.get().topic_id.name}",
     }
-    return render_template('question.html', question=question)
-
-@app.route("/question")
-def question():
-    return render_template("question.html", question=random.choice(QUESTIONS))
+    return render_template('question.html', question=question, user=twitter_user, userScore=user.score)
 
 @app.route("/index")
 def index():
