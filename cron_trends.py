@@ -19,7 +19,7 @@ async def generate_questions_by_trend():
         user = User.get_or_create(user_id=user_data[0], username=user_data[1], score=0)[0]
 
         # Get or create quiz
-        quiz = Quiz.get_or_create(topic_id=1, user_id=user.user_id, name=trend)[0]
+        quiz = Quiz.get_or_create(topic_id=1, user_id=user.user_id, name="daily_trend")[0]
         for type in ['complete', 'trivia']:
             # Questions
             questions = await gi.GrokInterface(texts).generate_questions(type)
