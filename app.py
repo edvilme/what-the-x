@@ -10,6 +10,8 @@ import urllib.error
 import json
 import tweepy
 
+import x_interface as x
+
 # Config - Load environment variables
 
 # Config - Load environment variables
@@ -133,5 +135,17 @@ def answer(question):
         return {"status": "correct"}
     return {"status": "incorrect"}
     
-if __name__ == '__main__':
-    app.run()
+
+# Cron jobs
+from flask_apscheduler import APScheduler
+scheduler = APScheduler()
+
+@scheduler.task('interval', id='generate_questions', seconds=20)
+def generate_questions():
+    tweets = x.get_tweets_in_reply_to("#trending")
+    print(tweets)
+
+scheduler.init_app(app)
+scheduler.start()
+app.run()
+
