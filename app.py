@@ -9,10 +9,12 @@ from urllib import parse
 import urllib.error
 import json
 import tweepy
-from dotenv import load_dotenv
 
+# Config - Load environment variables
+from dotenv import load_dotenv
 load_dotenv(".env")
 
+# Config - Flask app
 app = Flask(__name__, 
             static_url_path='', 
             static_folder='static')
@@ -20,6 +22,7 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
+# Config - OAuth2
 oauth2_user_handler = tweepy.OAuth2UserHandler(
     client_id = os.getenv('CLIENT_ID'),
     redirect_uri = os.getenv('REDIRECT_URI'),
@@ -30,32 +33,10 @@ oauth2_user_handler = tweepy.OAuth2UserHandler(
 authorize_url = (oauth2_user_handler.get_authorization_url())
 state = parse.parse_qs(parse.urlparse(authorize_url).query)['state'][0]
 
-QUESTIONS = [
-    {
-        'id': 1,
-        'type': 'trivia',
-        'trending_topic': 'testing', 
-        'question': "What is the answer to life, the universe, and everything?",
-        'options': ['42', '24', '0', '1'],
-        'answer': '42'
-    },
-    {
-        'id': 2,
-        'type': 'trivia',
-        'trending_topic': 'testing',
-        'question': "What is the capital of France?",
-        'options': ['Paris', 'London', 'Berlin', 'Madrid'],
-        'answer': 'Paris'
-    }, 
-    {
-        'id': 3,
-        'type': 'trivia',
-        'trending_topic': 'testing',
-        'question': "What is the largest mammal in the world?",
-        'options': ['Blue Whale', 'Elephant', 'Giraffe', 'Hippopotamus'],
-        'answer': 'Blue Whale'
-    }
-]
+# Data - Questions
+from models import *
+
+QUESTIONS = []
 
 @app.route('/')
 def hello():
@@ -97,18 +78,31 @@ def me():
     client = tweepy.Client(access_token)
     return session.get("user_token")
 
-@app.route("/bookmarks")
-def bookmarks():
-    if not session.get("user_token"):
-        return render_template('error.html', error_message="You are not authenticated")
-    access_token = session.get("user_token")
-    client = tweepy.Client(access_token)
-    bookmarks = client.get_bookmarks()
-    return bookmarks.data
-
 @app.errorhandler(500)
 def internal_server_error(e):
     return render_template('error.html', error_message='uncaught exception'), 500
+
+@app.route("/q/<string:username>/<string:quiz>")
+def q(username, quiz):
+    # Get quiz by name and username
+    q = Quiz.select().join(User).where(User.username == username, Quiz.name == quiz)
+    if not q:
+        return render_template('error.html', error_message='Quiz not found'), 404
+    # Get questions by quiz
+    questions = Question.select().where(Question.quiz_id == q.get().id)
+    if not questions:
+        return render_template('error.html', error_message='Questions not found'), 404
+    # Get random question
+    question = random.choice(questions)
+    # Add data to question
+    question = {
+        "id": question.id,
+        "type": question.type,
+        "question": question.question,
+        "options": [option.option for option in question.options],
+        "trending_topic": f"{q.get().topic_id.country}/{q.get().topic_id.name}",
+    }
+    return render_template('question.html', question=question)
 
 @app.route("/question")
 def question():
