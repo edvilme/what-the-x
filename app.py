@@ -76,6 +76,10 @@ def callback():
     access_token = oauth2_user_handler.fetch_token(response_url_from_app)['access_token']
     session["user_token"] = access_token
 
+    # Create user if not exists
+    user = tweepy.Client(access_token).get_me().data
+    User.get_or_create(user_id=user["id"], username=user["screen_name"], score=0)
+
     return redirect("/index")
 
 @app.route("/me")
@@ -86,16 +90,21 @@ def me():
     client = tweepy.Client(access_token)
     return session.get("user_token")
 
-@app.errorhandler(500)
-def internal_server_error(e):
-    return render_template('error.html', error_message='uncaught exception'), 500
-
 @app.route("/q/<string:username>/<string:quiz>")
 def q(username, quiz):
+    # Login
+    if not session.get("user_token"):
+        return render_template('error.html', error_message="You are not authenticated")
     # Get quiz by name and username
     q = Quiz.select().join(User).where(User.username == username, Quiz.name == quiz)
     if not q:
         return render_template('error.html', error_message='Quiz not found'), 404
+    # Get user id in database
+    user = User.get(User.user_id == tweepy.Client(session.get("user_token")).get_me().data["id"])
+    # Get questions in quiz unanswered by user
+    questions = Question.select()\
+        .where(Question.quiz_id == q.get().id)\
+        .where(Question.id.not_in(QuestionAnswers.select(QuestionAnswers.question_id).where(QuestionAnswers.user_id == user)))    
     # Get questions by quiz
     questions = Question.select().where(Question.quiz_id == q.get().id)
     if not questions:
@@ -110,11 +119,7 @@ def q(username, quiz):
         "options": [option.option for option in question.options],
         "trending_topic": f"{q.get().topic_id.country}/{q.get().topic_id.name}",
     }
-    return render_template('question.html', question=question)
-
-'''@app.route("/question")
-def question():
-    return render_template("question.html", question=random.choice(QUESTIONS))'''
+    return render_template('question.html', question=question, user=user)
 
 @app.route("/index")
 def index():
@@ -130,6 +135,8 @@ def leaderboard():
 
 @app.route("/answer/<int:question>", methods=["POST"])
 def answer(question):
+    if not session.get("user_token"):
+        return {"status": "error", "error": "User not authenticated"}, 401
     answer = request.form.get("answer")
     if answer is None:
         return {"stauts": "error", "error": "Answer not found"}, 404
@@ -137,16 +144,20 @@ def answer(question):
     q = Question.get(Question.id == question)
     if not q:
         return {"status": "error", "error": "Answer not found"}, 404
+    # Get user data
+    user = tweepy.Client(session.get("user_token")).get_me().data
+    # Save answer
+    QuestionAnswers.create(
+        user_id=User.get(User.user_id == user["id"]),
+        question_id=question,
+        correct=q.answer == answer,
+        date=datetime.now()
+    )
     # Check answer
     if q.answer == answer:
         return {"status": "correct"}
     return {"status": "incorrect"}
     
-# # Run cron_generate_questions as a background task only once
-# @scheduler.task('date', id='_cron_generate_questions', run_date=datetime.now())
-# def _cron_generate_questions():
-#     asyncio.run(cron_generate_questions())
-
-# scheduler.init_app(app)
-# scheduler.start()
-# app.run()
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('error.html', error_message='uncaught exception'), 500

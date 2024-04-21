@@ -23,7 +23,7 @@
         <div class="container mx-auto flex justify-between items-center">
             <div class="flex items-center text-white">
                 <a href="index" class="bg-grey text-white font-bold py-2 px-4">Back</a>
-                <span id="user_username" class="mr-4">@appleseed</span>
+                <span id="user_username" class="mr-4">{{ user['username'] }}</span>
                 <span id="user_score" class="bg-purple-500 text-white px-3 py-2 rounded-full flex items-center justify-center font-bold shadow-lg animate-pulse">
                     🏆 <!-- Emoji representing the score -->
                     <span class="ml-2 text-xl">{{ userScore }}</span>

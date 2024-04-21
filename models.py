@@ -34,4 +34,10 @@ class QuestionOption(BaseModel):
     question_id = ForeignKeyField(Question, backref='options')
     option = CharField()
 
-db.create_tables([User, Topic, Quiz, Question, QuestionOption])
+class QuestionAnswers(BaseModel):
+    user_id = ForeignKeyField(User, backref='answers')
+    question_id = ForeignKeyField(Question, backref='answers')
+    correct = BooleanField()
+    date = DateTimeField()
+
+db.create_tables([User, Topic, Quiz, Question, QuestionOption, QuestionAnswers])
