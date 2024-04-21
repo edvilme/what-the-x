@@ -4,7 +4,7 @@ import os
 load_dotenv(".env")
 
 # Config - Database
-db = PostgresqlDatabase(os.getenv('DB_NAME'), user=os.getenv('DB_USER'), password=os.getenv('DB_PASSWORD'), host=os.getenv('DB_HOST'), port=os.getenv('DB_PORT'))
+db = PostgresqlDatabase(None)
 
 class BaseModel(Model):
     class Meta:
@@ -38,4 +38,5 @@ class QuestionOption(BaseModel):
     question_id = ForeignKeyField(Question, backref='options')
     option = CharField()
 
+db.init(os.getenv('DB_NAME'), user=os.getenv('DB_USER'), password=os.getenv('DB_PASSWORD'), host=os.getenv('DB_HOST'), port=os.getenv('DB_PORT'))
 db.create_tables([User, Topic, Quiz, Question, QuestionOption])
