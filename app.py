@@ -59,12 +59,7 @@ QUESTIONS = [
 
 @app.route('/')
 def hello():
-    return render_template('index.html')
-
-@app.route('/start')
-def start():
     return render_template('start.html', authorize_url=authorize_url)
-
 
 @app.route('/callback')
 def callback():
@@ -113,6 +108,10 @@ def internal_server_error(e):
 @app.route("/question")
 def question():
     return render_template("question.html", question=random.choice(QUESTIONS))
+
+@app.route("/index")
+def index():
+    return render_template("index.html", question=random.choice(QUESTIONS))
 
 @app.route("/answer/<int:question>", methods=["POST"])
 def answer(question):

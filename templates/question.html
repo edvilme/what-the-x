@@ -5,23 +5,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                clifford: '#da373d',
+              }
+            }
+          }
+        }
+      </script>
 </head>
 <body>
-    <nav>
-        <span id="user_username">@appleseed</span>
-        <span id="user_score">23</span>
-        <button>Log Out</button>
-    </nav>
+    <nav class="bg-gray-800 py-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center text-white">
+                <span id="user_username" class="mr-4">@appleseed</span>
+                <span id="user_score" class="bg-blue-500 text-white px-2 py-1 rounded-full">{{ userScore }}</span>
+            </div>
+            <button class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
+                Log Out
+            </button>
+        </div>
+    </nav>    
     <main>
-        <div id="question_details">
+        <div id="question_details" class="top-0 left-0">
             <span id="question_topic">{{question['trending_topic']}}</span> • <span id="question_type">{{question['type']}}</span>
         </div>
-        <div id="question_question">{{question['question']}}</div>
-        <form action="" method="post" id="question_options">
-            {% for option in question['options'] %}
-                <label><input type="radio" name="submission">{{option}}</label>
-            {% endfor %}
-        </form>
+        <div id="question_question" class="top-50 left-0">{{question['question']}}</div>
+        <form action="" method="post">
+            <div style="margin-top: 15%;" class="grid grid-cols-2 gap-8 justify-items-center items-center">
+                <div class="col-span-2 md:col-span-1 floating-button">
+                    <label>
+                        <button class="bg-sky-500 hover:bg-sky-700 text-white font-bold py-4 px-6 rounded inline-flex items-center w-full md:w-auto min-w-min min-h-full">
+                            <span>{{ question['options'][0] }}</span>
+                        </button>
+                    </label>
+                </div>
+                <div class="col-span-2 md:col-span-1 floating-button">
+                    <label>
+                        <button class="bg-sky-500 hover:bg-sky-700 text-white font-bold py-4 px-6 rounded inline-flex items-center w-full md:w-auto min-w-min min-h-full">
+                            <span>{{ question['options'][1] }}</span>
+                        </button>
+                    </label>
+                </div>
+                <div class="col-span-2 md:col-span-1 floating-button">
+                    <label>
+                        <button class="bg-sky-500 hover:bg-sky-700 text-white font-bold py-4 px-6 rounded inline-flex items-center w-full md:w-auto min-w-min min-h-full">
+                            <span>{{ question['options'][2] }}</span>
+                        </button>
+                    </label>
+                </div>
+                <div class="col-span-2 md:col-span-1 floating-button">
+                    <label>
+                        <button class="bg-sky-500 hover:bg-sky-700 text-white font-bold py-4 px-6 rounded inline-flex items-center w-full md:w-auto min-w-min min-h-full">
+                            <span>{{ question['options'][3] }}</span>
+                        </button>
+                    </label>
+                </div>
+            </div>
+        </form>                                   
     </main>
 </body>
 </html>

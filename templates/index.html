@@ -1,16 +1,183 @@
-{% extends "base.html" %}
-{% block containercontent %}
-<p class="lead">Welcome to the oauth-sample-v2. This app will show a basic demo of the 'Sign in with Twitter' experience using OAuth 2.0</p>
-<div class="hero-unit">
-	<p>To get started, we'll need you to authorize oauth-sample-v2  to access your Twitter account. Learn more information about <a href="https://developer.twitter.com/en/docs/authentication/oauth-2-0">OAuth 2.0</a></p>
-	<p>Here's our plan:</p>
-	<ol>
-		<li>We will redirect you to Twitter.com for you to authorize our app.</li>
-		<li>While at Twitter.com, you will authorize oauth-sample-v2  and you'll then be redirected back to us.</li>
-		<li>When authorized succesfully, we'll make an authenticated call to the Twitter API to get some
-			information about the user who authorized the app, to show we are able to retrieve this data on your behalf.</li>
-	</ol>
-</div>
-<p>Ready to give this a shot?</p>
-<a href="/start" class="btn btn-small btn-success">Let's Begin</a>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What's the X</title>
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles */
+        body {
+            background: black;
+            font-family: 'Playfair Display', serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: white;
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #8a2be2;
+            color: #fff;
+            font-size: 1.2rem;
+            padding: 15px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: 0.3s ease;
+            margin: 10px;
+            border: 2px solid transparent;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="title">What's the X?</h1>
+        <a href="/tutorial" class="btn">Tutorial</a>
+        <a href="/question" class="btn">Daily Trivia</a>
+        <a href="#" class="btn">Play Memes</a>
+    </div>
+    <div id="particles-js" class="particles-js-canvas-el" style="width: 100%; height: 100%;"></div>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS('particles-js', {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#ffffff"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    },
+                    "image": {
+                        "src": "img/github.svg",
+                        "width": 100,
+                        "height": 100
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": false,
+                    "anim": {
+                        "enable": false,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": false,
+                        "speed": 40,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#ffffff",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 6,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false,
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 140,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 40,
+                        "duration": 2,
+                        "opacity": 8,
+                        "speed": 3
+                    },
+                    "repulse": {
+                        "distance": 200,
+                        "duration": 0.4
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    },
+                    "remove": {
+                        "particles_nb": 2
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+    </script>
+</body>
+
+</html>
