@@ -128,14 +128,14 @@ def answer(question):
         return {"status": "error", "error": "User not found"}, 404
     # Save answer
     QuestionAnswers.create(
-        user_id=User.get(User.user_id == user["id"]),
+        user_id=user,
         question_id=question,
         correct=q.answer == answer,
         date=datetime.now()
     )
     # Check answer
     if q.answer == answer:
-        User.update(score=User.score + 1).where(User.user_id == user["id"]).execute()
+        User.update(score=User.score + 1).where(User.user_id == user).execute()
         return {"status": "correct"}
     return {"status": "incorrect"}
 
