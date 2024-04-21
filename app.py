@@ -95,7 +95,7 @@ def q(username, quiz):
         "type": question.type,
         "question": question.question,
         "options": [option.option for option in question.options],
-        "trending_topic": f"{q.get().topic_id.country}/{q.get().topic_id.name}",
+        "trending_topic": f"@{username}/{quiz}",
     }
     return render_template('question.html', question=question)
 
@@ -113,14 +113,17 @@ def tutorial():
 
 @app.route("/answer/<int:question>", methods=["POST"])
 def answer(question):
-    # Search question by id
-    q = next((q for q in QUESTIONS if q['id'] == question), None)
+    answer = request.form.get("answer")
+    if answer is None:
+        return {"stauts": "error", "error": "Answer not found"}, 404
+    # Get question by id
+    q = Question.get(Question.id == question)
     if not q:
-        return {'status': 'error'}, 404
-    if q['answer'] == request.form['answer']:
-        return {'status': 'correct_answer'}
-    else:
-        return {'status': 'wrong_answer', 'correct_answer': q['answer']}
+        return {"status": "error", "error": "Answer not found"}, 404
+    # Check answer
+    if q.answer == answer:
+        return {"status": "correct"}
+    return {"status": "incorrect"}
     
 if __name__ == '__main__':
     app.run()
