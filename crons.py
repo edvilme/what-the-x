@@ -28,8 +28,7 @@ async def generate_questions():
     # Iterate over tweet groups
     for (username, user_id, text), tweets in tweet_groups.items():
         # Get or create user
-        # TODO: Find user_id in database
-        user = User.get_or_create(user_id=user_id, username=username, score=0)[0]
+        user = User.get_or_create(user_id=user_id, username=username)[0]
         # Get or create quiz
         quiz = Quiz.get_or_create(topic_id=1, user_id=user.user_id, name=text)[0]
         for type in ['complete', 'trivia']:
@@ -50,7 +49,7 @@ async def cron_generate_questions():
         except Exception as e:
             print("Error", e)
             pass
-        await asyncio.sleep(60)
+        await asyncio.sleep(100)
 
 if __name__ == "__main__":
     asyncio.run(cron_generate_questions())

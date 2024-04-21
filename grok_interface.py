@@ -24,13 +24,13 @@ class GrokInterface:
 
                 You must then provide me with the correct answer as a string.
 
-                Please format your answer as a valid JSON array. For example, if the question you generated is "What word is the most used?", and the options are ["The most used word is 'car'", "The most use word is 'winter'", "The most used word is 'universe'", "There is no most used words"], and the answer is "The most use word is 'winter'", your output should be.
+                Please format your answer as a valid JSON array. 
+                Provide human understandable questions, I want to ask about the tweet to someone who read, and the question is to see if they remembered or understood
                 [{{
-                    id: 1,
-                    topic: "AI",
-                    question: "What word is the most used?", 
-                    options: ["The most used word is 'car'", "The most use word is 'winter'", "The most used word is 'universe'", "There is no most used words"], 
-                    answer: "The most use word is 'winter'"
+                    topic: "replace this text with the topic the question belong to",
+                    question: "Replace this text with the question formulated", 
+                    options: ["replace this text with option answer 1", "replace this text with option answer 2", "replace this text with option answer 3", "replace this text with option answer 4"], 
+                    answer: "replace this text with the answer"
                 }}]<|separator|>
 
                 Assistant: Understood! Please provide the list of tweets and I will output an array of valid JSON.<|separator|>
@@ -55,11 +55,10 @@ class GrokInterface:
 
                 Please format your answer as a valid JSON array. For eg. if the tweet is "AI is the future", and you chose to remove "AI" and replace it with 3 underscores, and the options are ["AI", "Machine", "Learning", "Intelligence"], and the answer is "AI", your output should be.
                 [{{
-                    id: 1,
-                    topic: "AI",
-                    question: "___ is the future", 
-                    options: ["AI", "Machine", "Learning", "Intelligence"], 
-                    answer: "AI"
+                    topic: "replace this text with the topic the prompt belong to",
+                    question: "Replace this text with the tweet and a _ simulating blank space", 
+                    options: ["replace this text with option answer 1", "replace this text with option answer 2", "replace this text with option answer 43, "replace this text with option answer 4"], 
+                    answer: "replace this text with the answer"
                 }}]<|separator|>
 
                 Assistant: Understood! Please provide the list of tweets.<|separator|>

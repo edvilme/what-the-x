@@ -37,7 +37,7 @@ async def cron_generate_questions_by_trend():
         except Exception as e:
             print("Error", e)
             pass
-        await asyncio.sleep(60)
+        await asyncio.sleep(60*3)
 
 if __name__ == "__main__":
     asyncio.run(cron_generate_questions_by_trend())

@@ -89,7 +89,8 @@ def q(username, q):
         .where(Question.quiz_id == quiz.get().id, Question.id.not_in(QuestionAnswers.select(QuestionAnswers.question_id)\
         .where(QuestionAnswers.user_id == twitter_user.id)))    
     if not questions:
-        return render_template('error.html', error_message='Questions not found'), 404
+        return render_template('index.html')
+        # return render_template('error.html', error_message='Questions not found'), 404
     # Get random question
     question = random.choice(questions)
     # Add data to question
