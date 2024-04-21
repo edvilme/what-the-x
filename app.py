@@ -8,16 +8,6 @@ import random
 from urllib import parse
 import tweepy
 
-import x_interface as x
-import grok_interface as g
-from models import Quiz, User, QuestionOption
-from crons import cron_generate_questions
-
-from flask_apscheduler import APScheduler
-scheduler = APScheduler()
-
-# Config - Load environment variables
-
 # Config - Load environment variables
 from dotenv import load_dotenv
 load_dotenv(".env")
@@ -31,7 +21,6 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Config - OAuth2
-# Config - OAuth2
 oauth2_user_handler = tweepy.OAuth2UserHandler(
     client_id = os.getenv('CLIENT_ID'),
     redirect_uri = os.getenv('REDIRECT_URI'),
@@ -42,10 +31,6 @@ oauth2_user_handler = tweepy.OAuth2UserHandler(
 authorize_url = (oauth2_user_handler.get_authorization_url())
 state = parse.parse_qs(parse.urlparse(authorize_url).query)['state'][0]
 
-# Data - Questions
-from models import *
-
-QUESTIONS = []
 # Data - Questions
 from models import *
 
@@ -89,21 +74,18 @@ def me():
     access_token = session.get("user_token")
     return session.get("user_token")
 
-@app.route("/q/<string:username>/<string:q>")
-def q(username, q):
-    # Require login
-    if not session.get("user_token"):
-        return render_template('error.html', error_message="You are not authenticated")
-    # Get user id
-    twitter_user = tweepy.Client(session.get("user_token")).get_me(user_auth=False).data
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('error.html', error_message='uncaught exception'), 500
+
+@app.route("/q/<string:username>/<string:quiz>")
+def q(username, quiz):
     # Get quiz by name and username
-    quiz = Quiz.select().join(User).where(User.username == username, Quiz.name == q)
-    if not quiz:
+    q = Quiz.select().join(User).where(User.username == username, Quiz.name == quiz)
+    if not q:
         return render_template('error.html', error_message='Quiz not found'), 404
-    # Get questions in quiz unanswered by user
-    questions = Question.select()\
-        .where(Question.quiz_id == quiz.get().id, Question.id.not_in(QuestionAnswers.select(QuestionAnswers.question_id)\
-        .where(QuestionAnswers.user_id == twitter_user.id)))    
+    # Get questions by quiz
+    questions = Question.select().where(Question.quiz_id == q.get().id)
     if not questions:
         return render_template('error.html', error_message='Questions not found'), 404
     # Get random question
@@ -114,21 +96,13 @@ def q(username, q):
         "type": question.type,
         "question": question.question,
         "options": [option.option for option in question.options],
-        "trending_topic": f"{quiz.get().topic_id.country}/{quiz.get().topic_id.name}",
+        "trending_topic": f"{q.get().topic_id.country}/{q.get().topic_id.name}",
     }
-    return render_template('question.html', question=question, user=twitter_user)
+    return render_template('question.html', question=question)
 
-@app.route("/index")
-def index():
-    return render_template("index.html")
-
-@app.route("/tutorial")
-def tutorial():
-    return render_template("tutorial.html")
-
-@app.route("/leaderboard")
-def leaderboard():
-    return render_template("leaderboard.html")
+@app.route("/question")
+def question():
+    return render_template("question.html", question=random.choice(QUESTIONS))
 
 @app.route("/answer/<int:question>", methods=["POST"])
 def answer(question):
